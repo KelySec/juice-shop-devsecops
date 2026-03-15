@@ -3,23 +3,58 @@ pipeline {
 
     stages {
 
-        stage('Checkout Code') {
+        stage('Checkout SCM') {
             steps {
-                echo 'Project ready'
+                echo 'Source code retrieved from GitHub by Jenkins SCM'
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build Application') {
             steps {
-                bat 'docker build -t juice-shop .'
+                echo 'Build stage to be configured'
             }
         }
 
-        stage('Run Container') {
+        stage('SAST Scan') {
             steps {
-                bat 'docker run -d -p 3001:3000 juice-shop'
+                echo 'SAST stage to be configured'
             }
         }
 
+        stage('Dependency Check') {
+            steps {
+                echo 'Dependency check stage to be configured'
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                echo 'Docker build stage to be configured'
+            }
+        }
+
+        stage('Trivy Scan') {
+            steps {
+                echo 'Trivy scan stage to be configured'
+            }
+        }
+
+        stage('Checkov Scan') {
+            steps {
+                echo 'Checkov scan stage to be configured'
+            }
+        }
+
+        stage('Docker Run') {
+            steps {
+                echo 'Docker run stage to be configured'
+            }
+        }
+
+        stage('ZAP Scan (DAST)') {
+            steps {
+                echo 'ZAP DAST stage to be configured'
+            }
+        }
     }
 }
