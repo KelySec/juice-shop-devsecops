@@ -17,7 +17,9 @@ pipeline {
 
         stage('SAST Scan') {
             steps {
-                echo 'SAST stage to be configured'
+                withSonarQubeEnv('SonarQube') {
+                    bat 'sonar-scanner.bat -Dsonar.projectKey=juice-shop-devsecops -Dsonar.sources=.'
+                }
             }
         }
 
