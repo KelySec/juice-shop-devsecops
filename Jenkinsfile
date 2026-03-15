@@ -34,6 +34,8 @@ pipeline {
         stage('Dependency Check') {
             steps {
                 dependencyCheck additionalArguments: '--scan . --format XML --format HTML', odcInstallation: 'DependencyCheck'
+                bat 'dir'
+                bat 'dir /s *dependency-check*'
                 dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
             }
         }
