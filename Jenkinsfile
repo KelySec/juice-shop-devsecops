@@ -33,9 +33,7 @@ pipeline {
         
         stage('Dependency Check') {
             steps {
-                dir('B:/DevSecOps/juice-shop-lab/juice-shop') {
-                    dependencyCheck additionalArguments: '--scan . --out . --format XML --format HTML', odcInstallation: 'DependencyCheck'
-                }
+                dependencyCheck additionalArguments: '--scan . --format XML --format HTML', odcInstallation: 'DependencyCheck'
                 dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
             }
         }
