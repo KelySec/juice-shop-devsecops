@@ -37,10 +37,13 @@ pipeline {
         
         stage('Dependency Check') {
             steps {
-                dependencyCheck additionalArguments: '--scan . --format XML --format HTML', odcInstallation: 'DependencyCheck'
+                withCredentials([string(credentialsId: 'nvd-api-key', variable: 'NVD_API_KEY')]) {
+                    dependencyCheck additionalArguments: "--nvdApiKey ${NVD_API_KEY} --scan . --format XML --format HTML", odcInstallation: 'DependencyCheck'
+                }
                 dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
             }
         }
+        
         stage('Docker Build') {
             steps {
                 echo 'Docker build stage to be configured'
