@@ -18,7 +18,10 @@ pipeline {
         stage('SAST Scan') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    bat 'sonar-scanner.bat -Dsonar.projectKey=juice-shop-devsecops -Dsonar.sources=.'
+                    script {
+                        def scannerHome = tool 'SonarQubeScanner'
+                        bat "${scannerHome}\\bin\\sonar-scanner.bat -Dsonar.projectKey=juice-shop-devsecops -Dsonar.sources=."
+                    }
                 }
             }
         }
