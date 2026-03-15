@@ -11,7 +11,7 @@ pipeline {
 
         stage('Build Application') {
             steps {
-                echo 'Build stage to be configured'
+                bat 'npm install'
             }
         }
 
