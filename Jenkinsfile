@@ -15,17 +15,22 @@ pipeline {
             }
         }
 
-        stage('SAST Scan') {
+       stage('SAST Scan') {
             steps {
-                withSonarQubeEnv('SonarQube') {
-                    script {
-                        def scannerHome = tool 'SonarQubeScanner'
-                        bat "${scannerHome}\\bin\\sonar-scanner.bat -Dsonar.projectKey=juice-shop-devsecops -Dsonar.sources=."
+                script {
+                    def scannerHome = tool 'SonarQubeScanner'
+                    def javaHome = tool 'Java17'
+                    withSonarQubeEnv('SonarQube') {
+                        bat """
+                        set JAVA_HOME=${javaHome}
+                        set PATH=%JAVA_HOME%\\bin;%PATH%
+                        ${scannerHome}\\bin\\sonar-scanner.bat -Dsonar.projectKey=juice-shop-devsecops -Dsonar.sources=.
+                        """
                     }
                 }
             }
         }
-
+        
         stage('Dependency Check') {
             steps {
                 echo 'Dependency check stage to be configured'
