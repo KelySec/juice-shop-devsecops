@@ -37,10 +37,10 @@ pipeline {
         
         stage('Dependency Check') {
             steps {
-                dependencyCheck additionalArguments: '--purge', odcInstallation: 'DependencyCheck'
+                dependencyCheck additionalArguments: '--scan . --format XML --format HTML', odcInstallation: 'DependencyCheck'
+                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
             }
         }
-
         stage('Docker Build') {
             steps {
                 echo 'Docker build stage to be configured'
