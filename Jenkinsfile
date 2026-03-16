@@ -52,7 +52,8 @@ pipeline {
 
         stage('Trivy Scan') {
             steps {
-                echo 'Trivy scan stage to be configured'
+                bat 'trivy image --format table -o trivy-report.txt juice-shop-devsecops:latest'
+                bat 'type trivy-report.txt'
             }
         }
 
