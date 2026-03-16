@@ -68,9 +68,18 @@ pipeline {
         }
 
         stage('ZAP Scan (DAST)') {
-            steps {
-                echo 'ZAP DAST stage will be configured next'
-            }
-        }
+    steps {
+        bat """
+        docker run --rm -t \
+        -v %cd%:/zap/wrk/:rw \
+        ghcr.io/zaproxy/zaproxy:stable \
+        zap-baseline.py \
+        -t http://host.docker.internal:3000 \
+        -r zap-report.html
+        """
+
+        bat "type zap-report.html"
+    }
+}
     }
 }
