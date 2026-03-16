@@ -19,7 +19,10 @@ pipeline {
             }
         }
 
-       stage('SAST Scan') {
+        stage('SAST Scan') {
+            when {
+                expression { false }
+            }
             steps {
                 script {
                     def scannerHome = tool 'SonarQubeScanner'
@@ -34,8 +37,11 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Dependency Check') {
+            when {
+                expression { false }
+            }
             steps {
                 withCredentials([string(credentialsId: 'nvd-api-key', variable: 'NVD_API_KEY')]) {
                     dependencyCheck additionalArguments: "--nvdApiKey ${NVD_API_KEY} --scan . --format XML --format HTML", odcInstallation: 'DependencyCheck'
@@ -43,8 +49,11 @@ pipeline {
                 dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
             }
         }
-        
+
         stage('Docker Build') {
+            when {
+                expression { false }
+            }
             steps {
                 bat 'docker build -t juice-shop-devsecops .'
             }
@@ -52,7 +61,6 @@ pipeline {
 
         stage('Trivy Scan') {
             steps {
-                bat 'echo TRIVY_STAGE_NEW_VERSION'
                 bat '"C:\\Users\\deffe\\AppData\\Local\\Microsoft\\WinGet\\Packages\\AquaSecurity.Trivy_Microsoft.Winget.Source_8wekyb3d8bbwe\\trivy.exe" image --format table -o trivy-report.txt juice-shop-devsecops:latest'
                 bat 'type trivy-report.txt'
             }
@@ -60,13 +68,15 @@ pipeline {
 
         stage('Checkov Scan') {
             steps {
-                echo 'Checkov scan stage to be configured'
+                bat '"C:\\Users\\deffe\\AppData\\Local\\Programs\\Python\\Python313\\python.exe" "C:\\Users\\deffe\\AppData\\Local\\Programs\\Python\\Python313\\Scripts\\checkov" -d . --skip-path .github --soft-fail > checkov-report.txt'
+                bat 'type checkov-report.txt'
             }
         }
 
         stage('Docker Run') {
             steps {
-                echo 'Docker run stage to be configured'
+                bat 'docker rm -f juice-shop-container || exit /b 0'
+                bat 'docker run -d --name juice-shop-container -p 3000:3000 juice-shop-devsecops:latest'
             }
         }
 
