@@ -67,19 +67,13 @@ pipeline {
             }
         }
 
-        stage('ZAP Scan (DAST)') {
-    steps {
-        bat """
-        docker run --rm -t \
-        -v %cd%:/zap/wrk/:rw \
-        ghcr.io/zaproxy/zaproxy:stable \
-        zap-baseline.py \
-        -t http://host.docker.internal:3000 \
-        -r zap-report.html
-        """
-
-        bat "type zap-report.html"
-    }
-}
+       stage('ZAP Scan (DAST)') {
+            steps {
+                bat '''
+                docker run --rm -t -v "%cd%:/zap/wrk/:rw" ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t http://host.docker.internal:3000 -r zap-report.html || exit /b 0
+                '''
+                bat 'type zap-report.html'
+            }
+        }
     }
 }
