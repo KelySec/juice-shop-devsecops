@@ -24,17 +24,7 @@ pipeline {
                 expression { false }
             }
             steps {
-                script {
-                    def scannerHome = tool 'SonarQubeScanner'
-                    def javaHome = tool 'Java17'
-                    withSonarQubeEnv('SonarQube') {
-                        bat """
-                        set JAVA_HOME=${javaHome}
-                        set PATH=%JAVA_HOME%\\bin;%PATH%
-                        ${scannerHome}\\bin\\sonar-scanner.bat -Dsonar.projectKey=juice-shop-devsecops -Dsonar.sources=.
-                        """
-                    }
-                }
+                echo 'SAST skipped'
             }
         }
 
@@ -43,10 +33,7 @@ pipeline {
                 expression { false }
             }
             steps {
-                withCredentials([string(credentialsId: 'nvd-api-key', variable: 'NVD_API_KEY')]) {
-                    dependencyCheck additionalArguments: "--nvdApiKey ${NVD_API_KEY} --scan . --format XML --format HTML", odcInstallation: 'DependencyCheck'
-                }
-                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+                echo 'Dependency Check skipped'
             }
         }
 
@@ -55,7 +42,7 @@ pipeline {
                 expression { false }
             }
             steps {
-                bat 'docker build -t juice-shop-devsecops .'
+                echo 'Docker build skipped'
             }
         }
 
@@ -82,7 +69,7 @@ pipeline {
 
         stage('ZAP Scan (DAST)') {
             steps {
-                echo 'ZAP DAST stage to be configured'
+                echo 'ZAP DAST stage will be configured next'
             }
         }
     }
