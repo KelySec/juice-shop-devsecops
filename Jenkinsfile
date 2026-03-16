@@ -52,6 +52,7 @@ pipeline {
 
         stage('Trivy Scan') {
             steps {
+                bat 'echo TRIVY_STAGE_NEW_VERSION'
                 bat '"C:\\Users\\deffe\\AppData\\Local\\Microsoft\\WinGet\\Packages\\AquaSecurity.Trivy_Microsoft.Winget.Source_8wekyb3d8bbwe\\trivy.exe" image --format table -o trivy-report.txt juice-shop-devsecops:latest'
                 bat 'type trivy-report.txt'
             }
