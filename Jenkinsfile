@@ -62,16 +62,15 @@ pipeline {
 
         stage('Docker Run') {
             steps {
+                bat 'docker network create juice-shop-net || exit /b 0'
                 bat 'docker rm -f juice-shop-container || exit /b 0'
-                bat 'docker run -d --name juice-shop-container -p 3000:3000 juice-shop-devsecops:latest'
+                bat 'docker run -d --name juice-shop-container --network juice-shop-net -p 3000:3000 juice-shop-devsecops:latest'
             }
         }
-
-       stage('ZAP Scan (DAST)') {
+        
+        stage('ZAP Scan (DAST)') {
             steps {
-                bat '''
-                docker run --rm -t -v "%cd%:/zap/wrk/:rw" ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t http://host.docker.internal:3000 -r zap-report.html || exit /b 0
-                '''
+                bat 'docker run --rm --network juice-shop-net -t -v "%cd%:/zap/wrk/:rw" ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t http://juice-shop-container:3000 -r zap-report.html || exit /b 0'
                 bat 'type zap-report.html'
             }
         }
