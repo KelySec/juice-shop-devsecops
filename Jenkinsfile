@@ -46,7 +46,7 @@ pipeline {
         
         stage('Docker Build') {
             steps {
-                echo 'Docker build stage to be configured'
+                bat 'docker build -t juice-shop-devsecops .'
             }
         }
 
